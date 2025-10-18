@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<title>三國幻戰第三彈</title>
+<style>
+  body { font-family: Arial; padding: 20px; }
+  input {
+    width: 48%;
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    margin-bottom: 15px;
+  }
+  datalist option {
+    font-size: 14px;
+  }
+  .dropdown { 
+    margin: 8px 0; 
+    width: 100%;
+    padding: 8px;
+    border-radius: 6px;
+    font-size: 15px;
+  }
+  option strong {
+    color: red;
+  }
+</style>
+</head>
+<body>
+
+<h3>卡牌名稱</h3>
+<input type="text" id="searchInput1" list="suggest1" placeholder="輸入第一張卡">
+<datalist id="suggest1"></datalist>
+
+<input type="text" id="searchInput2" list="suggest2" placeholder="輸入第二張卡">
+<datalist id="suggest2"></datalist>
+
+<div id="dropdownContainer"></div>
+
+<script>
+const data = [
+  "百花凋零 孫尚香 馬雲祿 連續幻影 震天虎 呂玲綺 怒潮風斬 電閃雷鳴 華雄 遠交近攻 炎鹿 大喬 輕勇飛玲 黃蓋 張飛 蝶影飛舞 夏侯惇 如火燎原 冰熊 雙斧旋風 袁紹 小喬 風卷殘雲 甄宓 瞬移暴擊 怒髮沖冠 貂蟬 橫槍躍馬 關銀屏 左慈 烈刃之息 獅子 炎鹿 張遼 混亂法陣 震天虎 嶄露鋒芒 關銀屏 孫策 連續幻影 華雄 炎鹿 威震蒼穹 祝融 蝶影飛舞 草船借箭 黃蓋 笑裡藏刀 獅子 關羽 遠交近攻 馬超 如火燎原",
+  "百花凋零 呂玲綺 怒潮風斬 黃蓋 蝶影飛舞 電閃雷鳴 馬雲祿 大喬 冰魄降臨 袁紹 連環火攻 輕勇飛鈴 冰熊 甄宓 典韋 風卷殘雲 夏侯惇 怒髮沖冠 雙斧旋風 貂蟬 烈刃之息 小喬 張郃 瞬移暴擊 張遼 震天虎 嶄露鋒芒 關銀屏 孫策 連續幻影 華雄 炎鹿 威震蒼穹 祝融 蝶影飛舞 草船借箭 黃蓋 笑裡藏刀 獅子 關羽 孫尚香 遠交近攻 馬超 如火燎原 百花凋零 馬雲祿 風卷殘雲 呂玲綺 電閃雷鳴 怒潮風斬 大喬 震天虎 烈刃之息 左慈 張郃 輕勇飛鈴 袁紹 怒吼威脅 連續幻影 夏侯惇 怒髮沖冠 雙斧旋風 華雄 一錘定音 羽石精靈 冰熊 雙斧旋風 袁紹 小喬 風卷殘雲 甄宓 瞬移暴擊 怒髮沖冠 貂蟬 橫槍躍馬 關銀屏 左慈 烈刃之息 獅子 天妒纏鎖 張郃 威震蒼穹 祝融 周瑜 一錘定音 太史慈 笑裡藏刀 草船借箭 華雄 連續幻影 震天虎 炎鹿",
+  "百花凋零 馬雲祿 風卷殘雲 呂玲綺 電閃雷鳴 怒潮風斬 大喬 震天虎 烈刃之息 左慈 張郃 輕勇飛鈴 袁紹 怒吼威脅 連續幻影 夏侯惇 怒髮沖冠 雙斧旋風 華雄 一錘定音 烈刃之息 獅子 天妒纏鎖 張郃 威震蒼穹 祝融 周瑜 一錘定音 太史慈 笑裡藏刀 草船借箭 華雄 連續幻影 震天虎 炎鹿",
+  "百花凋零 孫尚香 馬雲祿 連續幻影 震天虎 呂玲綺 怒潮風斬 電閃雷鳴 華雄 遠交近攻 炎鹿 大喬 輕勇飛玲 黃蓋 張飛 蝶影飛舞 夏侯惇 如火燎原 冰熊 雙斧旋風 袁紹 小喬 風卷殘雲 甄宓 瞬移暴擊 怒髮沖冠 貂蟬 橫槍躍馬 關銀屏 左慈 烈刃之息 獅子 天妒纏鎖 張郃 威震蒼穹 祝融 周瑜 一錘定音 太史慈 笑裡藏刀 草船借箭 連續幻影 華雄 震天虎 炎鹿",
+  "百花凋零 甄宓 馬雲祿 風卷殘雲 呂玲綺 電閃雷鳴 怒潮風斬 大喬 震天虎 烈刃之息 左慈 張郃 輕勇飛鈴 袁紹 怒吼威脅 連續幻影 夏侯惇 怒髮沖冠 雙斧旋風 華雄 一錘定音 羽石精靈 冰熊 貂蟬 瞬移暴擊 小喬 黃蓋 蝶影飛舞 關銀屏 勢如破竹 冰魄降臨 趙雲 郭嘉 甄宓 獅子 威震蒼穹 草船借箭 風卷殘雲 祝融 笑裡藏刀 孫策 張遼 烈刃之息 張郃 混亂法陣"
+];
+
+// 整理所有詞 (不重複)
+const allWords = [...new Set(data.join(" ").split(" "))];
+
+function updateSuggestions(inputId, listId) {
+  const val = document.getElementById(inputId).value.trim();
+  const datalist = document.getElementById(listId);
+  datalist.innerHTML = "";
+  if (!val) return;
+  allWords
+    .filter(word => word.startsWith(val)) // 前綴推薦
+    .forEach(word => {
+      const opt = document.createElement("option");
+      opt.value = word;
+      datalist.appendChild(opt);
+    });
+}
+
+function updateResults() {
+  const input1 = document.getElementById("searchInput1").value.trim();
+  const input2 = document.getElementById("searchInput2").value.trim();
+  const container = document.getElementById("dropdownContainer");
+  container.innerHTML = "";
+
+  if (!input1) return;
+
+  data.forEach(seq => {
+    const words = seq.split(" ");
+
+    words.forEach((word, index) => {
+      if (word === input1) {
+        const rotated = words.slice(index).concat(words.slice(0, index));
+        if (input2 && rotated[1] !== input2) return;
+
+        const select = document.createElement("select");
+        select.className = "dropdown";
+
+        rotated.forEach((w, i) => {
+          const option = document.createElement("option");
+          if (w === input1 && i === 0) {
+            option.innerHTML = `<strong>${w}</strong>`;
+          } else if (w === input2 && i === 1) {
+            option.innerHTML = `<strong>${w}</strong>`;
+          } else {
+            option.textContent = w;
+          }
+          select.appendChild(option);
+        });
+
+        container.appendChild(select);
+      }
+    });
+  });
+}
+
+// 綁定事件
+document.getElementById("searchInput1").addEventListener("input", () => {
+  updateSuggestions("searchInput1", "suggest1");
+  updateResults();
+});
+document.getElementById("searchInput2").addEventListener("input", () => {
+  updateSuggestions("searchInput2", "suggest2");
+  updateResults();
+});
+</script>
+
+</body>
+</html>
